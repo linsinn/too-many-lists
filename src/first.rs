@@ -1,10 +1,12 @@
+use std::mem;
+
 pub struct List {
     head: Link,
 }
 
 enum Link {
     Empty,
-    Next(Box<Node>),
+    More(Box<Node>),
 }
 
 struct Node {
@@ -18,9 +20,14 @@ impl List {
     }
 
     pub fn push(&mut self, elem: i32) {
-        let new_node = Node {
+        let new_node = Box::new(Node {
             elem,
-            next: self.head,
-        };
+            next: mem::replace(&mut self.head, Link::Empty),
+        });
+        self.head = Link::More(new_node);
+    }
+
+    pub fn pop(&mut self) -> Option<i32> {
+        None
     }
 }
